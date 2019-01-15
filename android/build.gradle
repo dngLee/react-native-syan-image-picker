@@ -30,6 +30,6 @@ repositories {
 }
 
 dependencies {
-    compile 'com.facebook.react:react-native:+'
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.3'
+    implementation 'com.facebook.react:react-native:+'
+    implementation 'com.github.dngLee.PictureSelector:picture_library:v2.2.3'
 }
