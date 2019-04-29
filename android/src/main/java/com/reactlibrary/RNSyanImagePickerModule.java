@@ -26,8 +26,11 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.PictureFileUtils;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Base64.Encoder;
 
 public class RNSyanImagePickerModule extends ReactContextBaseJavaModule {
 
@@ -253,8 +256,13 @@ public class RNSyanImagePickerModule extends ReactContextBaseJavaModule {
 
                             //base64 encode
                             if (enableBase64) {
-                                String encodeString = getBase64EncodeString(bitmap);
-                                aImage.putString("base64", encodeString);
+                                try {
+                                    String encodeString = "data:image/jpeg;base64," +  encodeBase64File(media.getCompressPath());
+                                    aImage.putString("base64", encodeString);
+                                } catch (Exception e) {
+                                    String encodeString = getBase64EncodeString(bitmap);
+                                    aImage.putString("base64", encodeString);
+                                }
                             }
                         }
 
@@ -313,5 +321,20 @@ public class RNSyanImagePickerModule extends ReactContextBaseJavaModule {
         } else if (this.mPickerPromise != null) {
             this.mPickerPromise.reject(SY_SELECT_IMAGE_FAILED_CODE, "取消");
         }
+    }
+
+    /**
+     * 将文件转成base64 字符串
+     * @param path 文件路径
+     * @return
+     * @throws Exception
+     */
+    private String encodeBase64File(String path) throws Exception {
+        File  file = new File(path);
+        FileInputStream inputFile = new FileInputStream(file);
+        byte[] buffer = new byte[(int)file.length()];
+        inputFile.read(buffer);
+        inputFile.close();
+        return Base64.encodeToString(buffer, 0);
     }
 }
